@@ -25,6 +25,12 @@ const lastCheckedMessageIds = {};
 // Helper function to create a delay
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+// Helper function to format a timestamp to a human-readable date and time
+const formatDate = (timestamp) => {
+  const date = new Date(timestamp * 1000); // Convert Unix timestamp to JavaScript Date
+  return date.toLocaleString(); // Format date to local date and time string
+};
+
 // Function to initialize the Telegram client
 async function initClient() {
   console.log('Initializing Telegram client...');
@@ -101,8 +107,10 @@ async function checkMessages(client) {
           await delay(4000);
 
           // Send notification to the user
+          client.setParseMode("html");
           await client.sendMessage(userId, {
-            message: `Found message containing [${foundWords.join(', ')}] in @${channelUsername}:\n${messageLink}\n\nContent: ${msg.text.substring(0, 200)}${msg.text.length > 200 ? '...' : ''}`,
+            message: `Found message containing [${foundWords.join(', ')}]: ${messageLink}
+            <br><i>Date: ${formatDate(msg.date)}</i>`,
           });
         }
 
@@ -127,7 +135,7 @@ async function main() {
 
     // Perform initial check
     await checkMessages(client);
-    
+
     schedule.scheduleJob('*/4 * * * *', async () => {
       await checkMessages(client);
     });
