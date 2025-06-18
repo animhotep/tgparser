@@ -1,13 +1,13 @@
 # Telegram Channel Parser
 
-A Node.js application that monitors a public Telegram channel for specific keywords and sends notifications when matches are found.
+A Node.js application that monitors multiple public Telegram channels for specific keywords and sends notifications when matches are found.
 
 ## Features
 
-- Monitors a specified public Telegram channel every 3 minutes
+- Monitors multiple public Telegram channels every 3 minutes
 - Searches for specific keywords in messages (supports multiple keywords)
-- Sends a notification with a link to the message when any of the keywords are found, indicating which specific keywords were matched
-- Avoids duplicate notifications by tracking the last checked message
+- Sends a notification with a link to the message when any of the keywords are found, indicating which specific keywords were matched and which channel the message was found in
+- Avoids duplicate notifications by tracking the last checked message for each channel
 
 ## Prerequisites
 
@@ -44,8 +44,8 @@ A Node.js application that monitors a public Telegram channel for specific keywo
      # Your phone number in international format
      PHONE_NUMBER=+1234567890
 
-     # Channel to monitor (without the @ symbol)
-     CHANNEL_USERNAME=channel_name
+     # Channels to monitor (without the @ symbol, comma-separated for multiple channels)
+     CHANNEL_USERNAME=channel_name,another_channel
 
      # Words to search for (comma-separated for multiple words)
      SEARCH_WORD=target_word,another_word
@@ -116,16 +116,16 @@ On the first run, you'll be prompted to enter:
 2. Your 2FA password (if enabled)
 
 After successful authentication, the application will:
-1. Start monitoring the specified channel
+1. Start monitoring all the specified channels
 2. Check for new messages every 3 minutes
-3. Send you a notification when it finds a message containing your target word
+3. Send you a notification when it finds a message containing any of your target words, including which channel it was found in
 
 ## How It Works
 
 1. The application uses the Telegram API to connect to your account
-2. It periodically fetches the latest messages from the specified channel
+2. It periodically fetches the latest messages from each of the specified channels
 3. It searches these messages for any of the keywords specified in your `.env` file
-4. When a match is found, it sends a message to your account with a link to the matching message and indicates which specific keywords were found
+4. When a match is found, it sends a message to your account with a link to the matching message, indicating which specific keywords were found and which channel the message was found in
 
 ## Troubleshooting
 
@@ -135,7 +135,7 @@ After successful authentication, the application will:
   - API_HASH must be a string (no quotes needed in .env file)
   - Double-check for typos in your API_HASH
   - If you get "AUTH_KEY_UNREGISTERED" errors, your credentials may be incorrect
-- Ensure the channel username is entered without the @ symbol
+- Ensure all channel usernames are entered without the @ symbol and are comma-separated
 - Check that your user ID is correct
 - Make sure your phone number is in international format (e.g., +1234567890) with the country code
 - Common API credential errors:
