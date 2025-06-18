@@ -8,6 +8,7 @@ const schedule = require('node-schedule');
 // Telegram API credentials from .env
 const apiId = parseInt(process.env.API_ID);
 const apiHash = process.env.API_HASH;
+const phoneNumber = process.env.PHONE_NUMBER;
 const channelUsername = process.env.CHANNEL_USERNAME;
 // Parse search words from environment variable (comma-separated)
 const searchWords = process.env.SEARCH_WORD.split(',').map(word => word.trim());
@@ -30,7 +31,7 @@ async function initClient() {
 
   // Start the client
   await client.start({
-    phoneNumber: async () => await input.text('Please enter your phone number: '),
+    phoneNumber: async () => phoneNumber, // Use phone number from .env
     password: async () => await input.text('Please enter your password: '),
     phoneCode: async () => await input.text('Please enter the code you received: '),
     onError: (err) => console.log(err),
@@ -52,7 +53,7 @@ async function checkMessages(client) {
 
     // Get the latest messages
     const messages = await client.getMessages(channel, {
-      limit: 20, // Check the last 20 messages
+      limit: 100, // Check the last 20 messages
     });
 
     // Filter messages that are newer than the last checked message

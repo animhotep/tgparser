@@ -41,6 +41,9 @@ A Node.js application that monitors a public Telegram channel for specific keywo
      API_ID=your_api_id
      API_HASH=your_api_hash
 
+     # Your phone number in international format
+     PHONE_NUMBER=+1234567890
+
      # Channel to monitor (without the @ symbol)
      CHANNEL_USERNAME=channel_name
 
@@ -109,9 +112,8 @@ npm start
 ```
 
 On the first run, you'll be prompted to enter:
-1. Your phone number (with country code)
-2. The verification code sent to your Telegram account
-3. Your 2FA password (if enabled)
+1. The verification code sent to your Telegram account
+2. Your 2FA password (if enabled)
 
 After successful authentication, the application will:
 1. Start monitoring the specified channel
@@ -135,6 +137,7 @@ After successful authentication, the application will:
   - If you get "AUTH_KEY_UNREGISTERED" errors, your credentials may be incorrect
 - Ensure the channel username is entered without the @ symbol
 - Check that your user ID is correct
+- Make sure your phone number is in international format (e.g., +1234567890) with the country code
 - Common API credential errors:
   - "API ID invalid" - Make sure your API_ID is a number and correctly copied from my.telegram.org
   - "API Hash invalid" - Verify your API_HASH is exactly as shown on my.telegram.org
