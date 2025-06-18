@@ -132,7 +132,7 @@ async function main() {
       await checkMessages(client);
     });
 
-    console.log(`Parser is running. Checking channels: @${channelUsernames.join(', @')} for [${searchWords.join(', ')}] every 3 minutes.`);
+    console.log(`Parser is running. Checking channels: @${channelUsernames.join(', @')} for [${searchWords.join(', ')}] every 4 minutes.`);
   } catch (error) {
     console.error('Error in main function:', error);
   }
