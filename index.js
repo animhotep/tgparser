@@ -21,6 +21,9 @@ const stringSession = new StringSession('');
 // Store last checked message ID to avoid duplicate notifications
 let lastCheckedMessageId = 0;
 
+// Helper function to create a delay
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 // Function to initialize the Telegram client
 async function initClient() {
   console.log('Initializing Telegram client...');
@@ -53,7 +56,7 @@ async function checkMessages(client) {
 
     // Get the latest messages
     const messages = await client.getMessages(channel, {
-      limit: 100, // Check the last 20 messages
+      limit: 100, // Check the last messages
     });
 
     // Filter messages that are newer than the last checked message
@@ -82,6 +85,9 @@ async function checkMessages(client) {
       );
 
       console.log(`Found message containing [${foundWords.join(', ')}]: ${messageLink}`);
+
+      // Add a 1-second delay before sending the message
+      await delay(1000);
 
       // Send notification to the user
       await client.sendMessage(userId, {
