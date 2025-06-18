@@ -9,7 +9,8 @@ const schedule = require('node-schedule');
 const apiId = parseInt(process.env.API_ID);
 const apiHash = process.env.API_HASH;
 const channelUsername = process.env.CHANNEL_USERNAME;
-const searchWord = process.env.SEARCH_WORD;
+// Parse search words from environment variable (comma-separated)
+const searchWords = process.env.SEARCH_WORD.split(',').map(word => word.trim());
 const userId = parseInt(process.env.USER_ID);
 const sessionName = process.env.SESSION_NAME;
 
@@ -41,10 +42,10 @@ async function initClient() {
   return client;
 }
 
-// Function to check for new messages containing the search word
+// Function to check for new messages containing any of the search words
 async function checkMessages(client) {
   try {
-    console.log(`Checking for messages containing "${searchWord}" in @${channelUsername}...`);
+    console.log(`Checking for messages containing any of [${searchWords.join(', ')}] in @${channelUsername}...`);
 
     // Get the channel entity
     const channel = await client.getEntity(channelUsername);
@@ -55,13 +56,14 @@ async function checkMessages(client) {
     });
 
     // Filter messages that are newer than the last checked message
-    // and contain the search word (case insensitive)
-    const matchingMessages = messages.filter(
-      msg => 
-        msg.id > lastCheckedMessageId && 
-        msg.text && 
-        msg.text.toLowerCase().includes(searchWord.toLowerCase())
-    );
+    // and contain any of the search words (case insensitive)
+    const matchingMessages = messages.filter(msg => {
+      if (!(msg.id > lastCheckedMessageId) || !msg.text) return false;
+
+      // Check if any of the search words are in the message text
+      const messageText = msg.text.toLowerCase();
+      return searchWords.some(word => messageText.includes(word.toLowerCase()));
+    });
 
     // Update the last checked message ID
     if (messages.length > 0) {
@@ -71,11 +73,18 @@ async function checkMessages(client) {
     // Send notifications for matching messages
     for (const msg of matchingMessages) {
       const messageLink = `https://t.me/${channelUsername}/${msg.id}`;
-      console.log(`Found matching message: ${messageLink}`);
+
+      // Find which search words were found in this message
+      const messageText = msg.text.toLowerCase();
+      const foundWords = searchWords.filter(word => 
+        messageText.includes(word.toLowerCase())
+      );
+
+      console.log(`Found message containing [${foundWords.join(', ')}]: ${messageLink}`);
 
       // Send notification to the user
       await client.sendMessage(userId, {
-        message: `Found message containing "${searchWord}":\n${messageLink}\n\nContent: ${msg.text.substring(0, 200)}${msg.text.length > 200 ? '...' : ''}`,
+        message: `Found message containing [${foundWords.join(', ')}]:\n${messageLink}\n\nContent: ${msg.text.substring(0, 200)}${msg.text.length > 200 ? '...' : ''}`,
       });
     }
 
@@ -99,7 +108,7 @@ async function main() {
       await checkMessages(client);
     });
 
-    console.log(`Parser is running. Checking @${channelUsername} for "${searchWord}" every 3 minutes.`);
+    console.log(`Parser is running. Checking @${channelUsername} for [${searchWords.join(', ')}] every 3 minutes.`);
   } catch (error) {
     console.error('Error in main function:', error);
   }

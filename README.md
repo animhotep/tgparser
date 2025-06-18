@@ -5,8 +5,8 @@ A Node.js application that monitors a public Telegram channel for specific keywo
 ## Features
 
 - Monitors a specified public Telegram channel every 3 minutes
-- Searches for a specific keyword in messages
-- Sends a notification with a link to the message when the keyword is found
+- Searches for specific keywords in messages (supports multiple keywords)
+- Sends a notification with a link to the message when any of the keywords are found, indicating which specific keywords were matched
 - Avoids duplicate notifications by tracking the last checked message
 
 ## Prerequisites
@@ -44,8 +44,8 @@ A Node.js application that monitors a public Telegram channel for specific keywo
      # Channel to monitor (without the @ symbol)
      CHANNEL_USERNAME=channel_name
 
-     # Word to search for
-     SEARCH_WORD=target_word
+     # Words to search for (comma-separated for multiple words)
+     SEARCH_WORD=target_word,another_word
 
      # Your Telegram user ID to receive notifications
      USER_ID=your_user_id
@@ -122,8 +122,8 @@ After successful authentication, the application will:
 
 1. The application uses the Telegram API to connect to your account
 2. It periodically fetches the latest messages from the specified channel
-3. It searches these messages for the keyword specified in your `.env` file
-4. When a match is found, it sends a message to your account with a link to the matching message
+3. It searches these messages for any of the keywords specified in your `.env` file
+4. When a match is found, it sends a message to your account with a link to the matching message and indicates which specific keywords were found
 
 ## Troubleshooting
 
