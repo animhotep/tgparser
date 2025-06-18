@@ -62,7 +62,7 @@ async function checkMessages(client) {
 
         // Get the latest messages
         const messages = await client.getMessages(channel, {
-          limit: 100, // Check the last messages
+          limit: 10, // Check the last messages
         });
 
         // Initialize lastCheckedMessageId for this channel if not exists
@@ -98,7 +98,7 @@ async function checkMessages(client) {
           console.log(`Found message containing [${foundWords.join(', ')}] in @${channelUsername}: ${messageLink}`);
 
           // Add a 1-second delay before sending the message
-          await delay(1000);
+          await delay(4000);
 
           // Send notification to the user
           await client.sendMessage(userId, {
@@ -113,7 +113,7 @@ async function checkMessages(client) {
       }
     }
 
-    console.log('All channels check completed.');
+    console.log(new Date() + ': All channels check completed.');
   } catch (error) {
     console.error('Error checking messages:', error);
   }
@@ -127,9 +127,8 @@ async function main() {
 
     // Perform initial check
     await checkMessages(client);
-
-    // Schedule regular checks every 3 minutes
-    schedule.scheduleJob('*/3 * * * *', async () => {
+    
+    schedule.scheduleJob('*/4 * * * *', async () => {
       await checkMessages(client);
     });
 

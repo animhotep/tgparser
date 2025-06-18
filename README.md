@@ -117,7 +117,7 @@ On the first run, you'll be prompted to enter:
 
 After successful authentication, the application will:
 1. Start monitoring all the specified channels
-2. Check for new messages every 3 minutes
+2. Check for new messages every 4 minutes
 3. Send you a notification when it finds a message containing any of your target words, including which channel it was found in
 
 ## How It Works
